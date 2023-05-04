@@ -1,0 +1,28 @@
+#!/bin/bash
+
+# Check disk space
+DISK_SPACE=$(df -h / | awk '{print $5}' | tail -n 1 | tr -d '%')
+if [ $DISK_SPACE -gt 90 ]; then
+    echo "Disk space usage is over 90%: $DISK_SPACE%"
+fi
+
+# Check CPU usage
+CPU_USAGE=$(top -bn1 | grep load | awk '{printf "%.2f\n", $(NF-2)}')
+CPU_THRESHOLD=2.0
+if (( $(echo "$CPU_USAGE > $CPU_THRESHOLD" | bc -l) )); then
+    echo "CPU usage is over $CPU_THRESHOLD: $CPU_USAGE"
+fi
+
+# Check memory usage
+MEMORY_USAGE=$(free | awk '/Mem/{printf("%d\n"), $3/$2*100}')
+MEMORY_THRESHOLD=80
+if [ $MEMORY_USAGE -gt $MEMORY_THRESHOLD ]; then
+    echo "Memory usage is over $MEMORY_THRESHOLD%: $MEMORY_USAGE%"
+fi
+
+# Check uptime
+UPTIME=$(uptime | awk '{print $3}' | tr -d ',')
+UPTIME_THRESHOLD=7
+if [ $UPTIME -gt $UPTIME_THRESHOLD ]; then
+    echo "Uptime is over $UPTIME_THRESHOLD days: $UPTIME days"
+fi
