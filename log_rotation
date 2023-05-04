@@ -1,0 +1,8 @@
+#!/bin/bash
+
+# Define variables
+LOG_DIR="/var/log/myapp"
+MAX_SIZE="10M"
+
+# Rotate logs
+logrotate -s $LOG_DIR/status -f $LOG_DIR/logrotate.conf
